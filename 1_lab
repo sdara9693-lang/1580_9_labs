@@ -1,0 +1,111 @@
+"""
+
+Алгоритм программы:
+
+Запросить ввод времени у пользователя (час и минута).
+Проверить корректность введенных данных:
+    Должны быть два числа.
+    Часы от 0 до 24, минуты от 0 до 59.
+    Если некорректно, вывести сообщение об ошибке и завершить.
+
+Определить словоформу для минут:
+    0 -> особый случай "ровно"
+    1, 21, 31, 41, 51 -> "минута"
+    2-4, 22-24, 32-34, 42-44, 52-54 -> "минуты"
+    Остальные -> "минут"
+
+Определить словоформу для часов:
+    12 и минуты == 00 -> "полдень"
+    12 и минуты != 00 -> "часов"
+    24, 0 -> "полночь"
+    1, 13, 21 -> "час"
+    24, 0, минуты != 00 -> "часов"
+    2-4, 14-15, 22, 23 -> "часа"
+    5-12, 17-20 -> часов""
+
+Определить временной интервал:
+    0-5 -> "ночи"
+    6-11 -> "утра"
+    12-17 -> "дня"
+    18-23 -> "вечера"
+
+Сформировать результат:
+    Склеить часы, минуты и период.
+
+Вывести результат.
+
+
+4. Преобразовать часы в 12-часовой формат (hour_form = hour если <=12, иначе hour - 12).
+
+
+
+
+8. Сформировать результат:
+   - Склеить часы, минуты и период.
+   - Если минуты == 0, добавить "ровно".
+9. Вывести результат.
+
+"""
+
+
+def minutes_answer(minute, answer):
+    if minute == 0:
+        answer.append('ровно')
+    if minute in [1, 21, 31, 41, 51]:
+        answer.append(minute)
+        answer.append('минута')
+    if (1 < minute < 5) or (21 < minute < 25) or (31 < minute < 35) or (41 < minute < 45) or (51 < minute < 55):
+        answer.append(minute)
+        answer.append('минуты')
+    elif minute != 0:
+        answer.append(minute)
+        answer.append('минут')
+    return None
+
+
+def hour_answer(hour, minute, answer):
+    if hour == 12 and minutes_answer(minute, []) == 0:
+        answer.append('полдень')
+    elif hour == 12 and minutes_answer(minute, []) != 0:
+        answer.append('12')
+        answer.append('часов')
+    if hour == 24 or hour == 0 and minutes_answer(minute, []) == 0:
+        answer.append('полночь')
+    if hour == 1 or hour == 21:
+        answer.append(hour)
+        answer.append('час')
+    if (hour == 0 or hour == 24) and minutes_answer(minute, []) != 0:
+        answer.append('0')
+        answer.append('часов')
+    if (1 < hour < 5) or (13 < hour < 15) or hour == 22 or hour == 23 :
+        answer.append(hour)
+        answer.append('часа')
+    if (4 < hour < 12) or (14 < hour < 21) or hour == 13:
+        answer.append(hour)
+        answer.append('часов')
+
+
+def day(hour, answer):
+    if (hour < 6 and hour != 0) or (hour == 0 and minutes_answer(minute, []) != 0):
+        answer.append('ночи')
+    if 5 < hour < 12:
+        answer.append('утра')
+    if (12 < hour < 18) or (hour == 12 and minutes_answer(minute, []) != 0):
+        answer.append('дня')
+    if 17 < hour < 24:
+        answer.append('вечера')
+
+
+hour, minute = map(int, input().split())
+
+if hour < 0 or hour > 24 or minute < 0 or minute > 60:
+    print('Некорректный ввод')
+    quit()
+
+answer = []
+
+hour_answer(hour, minute, answer)
+minutes_answer(minute, answer)
+day(hour, answer)
+
+print(*answer)
